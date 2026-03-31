@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGM Pro Tools &mdash; Case Study #4: The PestRoutes Discovery</title>
+    <style>
+        :root {
+            --primary: #0f3460;
+            --accent: #e94560;
+            --bg: #fafbfc;
+            --card-bg: #ffffff;
+            --text: #1a1a2e;
+            --text-light: #555;
+            --border: #e0e4e8;
+            --green: #27ae60;
+            --red: #e74c3c;
+            --yellow: #f39c12;
+            --blue: #2980b9;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 50%, #1a1a2e 100%);
+            color: white;
+            padding: 80px 0 60px;
+            text-align: center;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(233, 69, 96, 0.15);
+            color: var(--accent);
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .hero h1 {
+            font-size: 42px;
+            font-weight: 700;
+            max-width: 800px;
+            margin: 0 auto 16px;
+            line-height: 1.2;
+        }
+        .hero p {
+            font-size: 18px;
+            color: rgba(255,255,255,0.7);
+            max-width: 650px;
+            margin: 0 auto;
+        }
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        .hero-stat {
+            text-align: center;
+        }
+        .hero-stat .number {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .hero-stat .label {
+            font-size: 13px;
+            color: rgba(255,255,255,0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Sections */
+        section {
+            padding: 50px 0;
+        }
+        section + section {
+            border-top: 1px solid var(--border);
+        }
+
+        h2 {
+            font-size: 28px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        h3 {
+            font-size: 20px;
+            color: var(--text);
+            margin: 24px 0 12px;
+        }
+        p {
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 28px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .card.highlight {
+            border-left: 4px solid var(--accent);
+        }
+        .card.green-highlight {
+            border-left: 4px solid var(--green);
+            background: #f8fdf9;
+        }
+        .card.yellow-highlight {
+            border-left: 4px solid var(--yellow);
+            background: #fffdf5;
+        }
+        .card h3 {
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 28px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -26px;
+            top: 6px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 3px solid var(--bg);
+        }
+        .timeline-item.resolved::before {
+            background: var(--green);
+        }
+        .timeline-item.warning::before {
+            background: var(--yellow);
+        }
+        .timeline-item h4 {
+            font-size: 16px;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        .timeline-item p {
+            font-size: 14px;
+            margin-bottom: 0;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+        th {
+            background: var(--primary);
+            color: white;
+            padding: 10px 14px;
+            text-align: left;
+            font-weight: 600;
+        }
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+        }
+        tr:nth-child(even) { background: #f8f9fa; }
+        .green { color: var(--green); font-weight: 600; }
+        .red { color: var(--red); font-weight: 600; }
+        .yellow { color: var(--yellow); font-weight: 600; }
+
+        /* Value comparison */
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .comparison-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 24px;
+        }
+        .comparison-card.traditional {
+            border-top: 3px solid var(--red);
+        }
+        .comparison-card.agm {
+            border-top: 3px solid var(--green);
+        }
+        .comparison-card h3 {
+            margin-top: 0;
+            font-size: 16px;
+        }
+        .comparison-card .price {
+            font-size: 32px;
+            font-weight: 700;
+            margin: 12px 0;
+        }
+        .comparison-card.traditional .price { color: var(--red); }
+        .comparison-card.agm .price { color: var(--green); }
+        .comparison-card .detail {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        /* Metrics grid */
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .metric {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        .metric .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .metric .label {
+            font-size: 12px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+
+        /* Feature list */
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            padding: 8px 0 8px 28px;
+            position: relative;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        .feature-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--green);
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .feature-list li.missing::before {
+            content: '✗';
+            color: var(--red);
+        }
+
+        /* Quote */
+        blockquote {
+            border-left: 3px solid var(--accent);
+            padding: 16px 24px;
+            margin: 20px 0;
+            background: #fef9fa;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            color: var(--text);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary);
+            color: rgba(255,255,255,0.7);
+            padding: 40px 0;
+            text-align: center;
+            font-size: 13px;
+        }
+        .footer a { color: var(--accent); text-decoration: none; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 28px; }
+            .hero-stats { gap: 24px; }
+            .comparison { grid-template-columns: 1fr; }
+            .hero { padding: 50px 20px 40px; }
+        }
+        /* Nav */
+        .case-study-nav {
+            background: #0a1628;
+            padding: 10px 0;
+            font-size: 13px;
+            text-align: center;
+        }
+        .case-study-nav a {
+            color: rgba(255,255,255,0.5);
+            text-decoration: none;
+            margin: 0 16px;
+            transition: color 0.2s;
+        }
+        .case-study-nav a:hover { color: #e94560; }
+        .case-study-nav a.active { color: #e94560; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<div class="case-study-nav">
+    <a href="index.html">Case Study #1: Record Contamination</a>
+    <a href="case-study-2-dashboard-intelligence.html">Case Study #2: Dashboard Intelligence</a>
+    <a href="case-study-3-zapier-elimination.html">Case Study #3: Zapier Elimination</a>
+    <a href="case-study-4-pestroutes-discovery.html" class="active">Case Study #4: PestRoutes Discovery</a>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+    <div class="container">
+        <div class="hero-badge">AGM Pro Tools &mdash; Case Study</div>
+        <h1>8,373 Customers. Zero Automation. Half Without Email.</h1>
+        <p>Valley Pest Control &mdash; FieldRoutes (PestRoutes) Integration &amp; Data Discovery</p>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="number">8,373</div>
+                <div class="label">Total Customers</div>
+            </div>
+            <div class="hero-stat">
+                <div class="number">4,599</div>
+                <div class="label">Active Subscriptions</div>
+            </div>
+            <div class="hero-stat">
+                <div class="number">49%</div>
+                <div class="label">Phone-Only (No Email)</div>
+            </div>
+            <div class="hero-stat">
+                <div class="number">0%</div>
+                <div class="label">Lead Source Attribution</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- THE CLIENT -->
+<section>
+    <div class="container">
+        <h2>The Client</h2>
+        <p><strong>Valley Pest Control</strong> is an established pest control company running on <strong>FieldRoutes</strong> (formerly PestRoutes, now owned by ServiceTitan). They manage thousands of recurring pest control subscriptions &mdash; quarterly treatments, one-time exterminations, termite inspections &mdash; all tracked in FieldRoutes. Their customer base had grown over years of solid service work, but their technology stack had never grown with it.</p>
+        <p>When we connected to their FieldRoutes instance, we expected the usual gaps. What we found was far more significant.</p>
+        <div class="metrics">
+            <div class="metric">
+                <div class="value">8,373</div>
+                <div class="label">Total Customers</div>
+            </div>
+            <div class="metric">
+                <div class="value">4,599</div>
+                <div class="label">Active Subscriptions</div>
+            </div>
+            <div class="metric">
+                <div class="value">50K+</div>
+                <div class="label">Service Tickets</div>
+            </div>
+            <div class="metric">
+                <div class="value">50K+</div>
+                <div class="label">Appointments</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- THE DISCOVERY -->
+<section>
+    <div class="container">
+        <h2>The Discovery</h2>
+        <p>AGM Pro Tools connected to Valley Pest's FieldRoutes API and ran a comprehensive data audit across their entire customer base. The audit revealed five critical gaps &mdash; not bugs, not misconfigurations, but <em>structural blind spots</em> that had been invisibly costing the business for years.</p>
+
+        <div class="card highlight">
+            <h3>Finding #1: 49% of Customers Have No Email Address</h3>
+            <p>Of 8,373 customers, <strong>4,103 have no email on file</strong>. Only a phone number. This isn't a data quality issue &mdash; it's structural to pest control. Customers call about a scorpion in the kitchen, schedule service over the phone, and never provide an email. Any communication strategy built on email-first engagement misses half the customer base entirely.</p>
+        </div>
+
+        <div class="card highlight">
+            <h3>Finding #2: Zero Lead Source Attribution</h3>
+            <p>The lead source field is <strong>blank across every single record</strong>. 8,373 customers and zero visibility into which marketing channels drive business. Referrals? Google Ads? Yelp? Door hangers? Nobody knows. Every dollar spent on marketing is a guess &mdash; and every dollar earned is unattributed.</p>
+        </div>
+
+        <div class="card highlight">
+            <h3>Finding #3: Zero Automated Communication</h3>
+            <p>No marketing emails. No SMS sequences. No review requests after service. No welcome messages for new customers. No win-back campaigns for cancellations. No appointment reminders. <strong>8,373 customers and not a single automated touchpoint.</strong> Every communication is manual or nonexistent.</p>
+        </div>
+
+        <div class="card highlight">
+            <h3>Finding #4: FieldRoutes Has No Webhooks</h3>
+            <p>Unlike Jobber or Housecall Pro, FieldRoutes provides <strong>no webhook support whatsoever</strong>. There is no way for the platform to push events in real-time. The only option is polling &mdash; checking for changes at regular intervals. This is the single biggest architectural constraint in the integration, and it's invisible to anyone who hasn't built against the API.</p>
+        </div>
+
+        <div class="card highlight">
+            <h3>Finding #5: Frozen vs. Cancelled Ambiguity</h3>
+            <p>FieldRoutes has two subscription end-states: <strong>Frozen</strong> (temporarily paused) and <strong>Cancelled</strong> (permanently ended). Each requires a completely different communication strategy &mdash; a frozen customer needs a "welcome back" nudge, a cancelled customer needs a win-back campaign. But the distinction isn't obvious in the data without careful mapping.</p>
+        </div>
+    </div>
+</section>
+
+<!-- THE PLATFORM ANALYSIS -->
+<section>
+    <div class="container">
+        <h2>The Platform Analysis</h2>
+        <p>Before building anything, AGM Pro Tools conducted a deep assessment of the FieldRoutes API to understand exactly what's possible and what isn't. This analysis shapes every architectural decision downstream.</p>
+
+        <table>
+            <tr><th>Capability</th><th>FieldRoutes Status</th><th>Impact</th></tr>
+            <tr><td>Customer CRUD</td><td class="green">Full access</td><td>Create, read, update, delete customers</td></tr>
+            <tr><td>Subscription management</td><td class="green">Full access</td><td>Read active, frozen, cancelled states</td></tr>
+            <tr><td>Appointment data</td><td class="green">Full CRUD</td><td>Calendar sync possible (unlike Jobber)</td></tr>
+            <tr><td>Service ticket history</td><td class="green">Read access</td><td>Post-service triggers possible</td></tr>
+            <tr><td>Webhooks / real-time push</td><td class="red">Not available</td><td>Must poll every 5 minutes</td></tr>
+            <tr><td>OAuth2 authentication</td><td class="red">Not available</td><td>Manual token + key auth only</td></tr>
+            <tr><td>API documentation</td><td class="yellow">Weak</td><td>JS-rendered, old PestRoutes docs deprecated</td></tr>
+            <tr><td>Self-service credential provisioning</td><td class="red">Not available</td><td>Must request from FieldRoutes support</td></tr>
+        </table>
+
+        <blockquote>
+            FieldRoutes gives you more data access than Jobber &mdash; full appointment CRUD, subscription lifecycle, service history. But it gives you zero real-time event delivery. The architecture has to account for both strengths.
+        </blockquote>
+    </div>
+</section>
+
+<!-- THE SOLUTION -->
+<section>
+    <div class="container">
+        <h2>What We Built</h2>
+
+        <h3>1. Polling-Based Sync Engine</h3>
+        <p>Since FieldRoutes has no webhooks, we built a lightweight polling service that checks for changes every 5 minutes. For pest control workflows &mdash; review requests after service, cancellation win-backs, welcome sequences &mdash; a 5-minute delay is invisible to the customer and indistinguishable from real-time.</p>
+
+        <div class="card">
+            <h3>Architecture: FieldRoutes &rarr; CRM Sync</h3>
+            <table>
+                <tr><th>Component</th><th>Purpose</th></tr>
+                <tr><td>FieldRoutes API Poller</td><td>Checks for customer and subscription changes every 5 minutes</td></tr>
+                <tr><td>Contact matching (email &rarr; phone fallback)</td><td>Handles the 49% phone-only problem &mdash; matches by phone when no email exists</td></tr>
+                <tr><td>Subscription state mapper</td><td>Maps FR active/frozen/cancelled states to CRM pipeline stages</td></tr>
+                <tr><td>SQLite state store</td><td>Tracks every sync for idempotency &mdash; never processes the same change twice</td></tr>
+                <tr><td>Delta sync mode</td><td>Only processes records changed since last run &mdash; handles 8K+ customers efficiently</td></tr>
+                <tr><td>Rate limiter</td><td>0.5s between pages, 1.5s throttle per subscription fetch &mdash; respects API limits</td></tr>
+                <tr><td>Retry with exponential backoff</td><td>Failed syncs retry 3 times with 2<sup>n</sup> second delays before dead-lettering</td></tr>
+                <tr><td>Slack alerting</td><td>Real-time failure notification on every error</td></tr>
+            </table>
+        </div>
+
+        <h3>2. Subscription Lifecycle Mapping</h3>
+        <p>The key architectural decision: mapping FieldRoutes subscription states to CRM pipeline stages so every customer lands in the right automation track automatically.</p>
+
+        <div class="card">
+            <table>
+                <tr><th>FieldRoutes State</th><th>CRM Pipeline Stage</th><th>Automation Track</th></tr>
+                <tr><td>New customer, no subscription</td><td>Lead</td><td>Speed-to-lead, welcome sequence</td></tr>
+                <tr><td>Active subscription (recurring)</td><td>Recurring Service</td><td>Post-service reviews, upsell campaigns</td></tr>
+                <tr><td>Active subscription (one-time)</td><td>One Shot</td><td>Review request, rebooking nudge</td></tr>
+                <tr><td>Active subscription (inspection)</td><td>Inspections</td><td>Inspection follow-up, conversion to service</td></tr>
+                <tr><td>Frozen (temporarily paused)</td><td>No Service + tag</td><td>Reactivation campaign: "pests don't take time off"</td></tr>
+                <tr><td>Cancelled (permanent)</td><td>Cancelled Service</td><td>Win-back: Day 1, Day 7, Day 30 sequence</td></tr>
+            </table>
+        </div>
+
+        <h3>3. SMS-First Communication Architecture</h3>
+        <p>With 49% of customers having no email, we designed every automation workflow as <strong>SMS-first, email-second</strong>. This flips the typical CRM playbook &mdash; which assumes email is primary &mdash; and ensures no customer falls through the cracks.</p>
+
+        <div class="card green-highlight">
+            <h3>10 Automation Workflows Deployed</h3>
+            <ul class="feature-list">
+                <li>Post-service review requests (SMS &rarr; email, 2-3 hours after appointment)</li>
+                <li>New customer welcome sequence (3 messages over 7 days)</li>
+                <li>Speed-to-lead auto-response (&lt;60 seconds on new customer creation)</li>
+                <li>Missed call text-back (immediate SMS when inbound call goes unanswered)</li>
+                <li>Full pipeline synchronization (FieldRoutes &rarr; CRM every 5 minutes)</li>
+                <li>Subscription cancellation win-back (Day 1 / Day 7 / Day 30)</li>
+                <li>Frozen subscription reactivation campaign</li>
+                <li>Appointment reminders (day-before SMS)</li>
+                <li>Missed appointment rebooking</li>
+                <li>Seasonal service upsell (cross-sell termite, rodent, mosquito treatments)</li>
+            </ul>
+        </div>
+
+        <h3>4. Isolated Infrastructure</h3>
+        <p>Every client gets its own Modal app, its own secrets vault, and its own data volume. Valley Pest's sync runs in complete isolation &mdash; no shared credentials, no shared state, no cross-contamination with any other client's data.</p>
+    </div>
+</section>
+
+<!-- THE VALUE -->
+<section style="background: #f0f4f8;">
+    <div class="container">
+        <h2>The Value</h2>
+
+        <div class="comparison">
+            <div class="comparison-card traditional">
+                <h3>What They Had</h3>
+                <div class="price">$0 Automation</div>
+                <div class="detail" style="margin-bottom: 12px;">8,373 customers running on zero automated communication</div>
+                <ul class="feature-list" style="margin-top: 16px;">
+                    <li class="missing">No review requests after service</li>
+                    <li class="missing">No welcome sequence for new customers</li>
+                    <li class="missing">No win-back for cancellations</li>
+                    <li class="missing">No lead source tracking</li>
+                    <li class="missing">No speed-to-lead response</li>
+                    <li class="missing">No missed call follow-up</li>
+                    <li class="missing">49% of customers unreachable by email</li>
+                </ul>
+            </div>
+            <div class="comparison-card agm">
+                <h3>What We Built</h3>
+                <div class="price">10 Workflows</div>
+                <div class="detail" style="margin-bottom: 12px;">Full lifecycle automation covering 100% of customer base</div>
+                <ul class="feature-list" style="margin-top: 16px;">
+                    <li>SMS-first architecture (reaches all 8,373 customers)</li>
+                    <li>Post-service review requests on every completed job</li>
+                    <li>Sub-60-second lead response</li>
+                    <li>Cancellation win-back sequences</li>
+                    <li>Pipeline sync every 5 minutes</li>
+                    <li>Isolated infrastructure per client</li>
+                    <li>Full audit trail with SQLite state tracking</li>
+                </ul>
+            </div>
+        </div>
+
+        <blockquote>
+            Valley Pest didn't have a software problem. They had a visibility problem. 8,373 customers generating revenue with zero insight into what drives growth, what causes churn, or which customers are about to leave. The FieldRoutes data was all there &mdash; nobody had ever connected it to anything.
+        </blockquote>
+    </div>
+</section>
+
+<!-- WHY THIS MATTERS -->
+<section>
+    <div class="container">
+        <h2>Why This Matters for Pest Control</h2>
+        <p>Valley Pest isn't unique. The patterns we found are <em>structural to the pest control vertical</em>:</p>
+
+        <div class="card yellow-highlight">
+            <h3>Industry Pattern: Phone-Only Customers</h3>
+            <p>Pest control customers call when they have an emergency &mdash; ants in the kitchen, scorpions in the garage, rodents in the attic. They schedule service over the phone and never provide an email. <strong>Any automation platform that assumes email-first will fail in pest control.</strong> SMS isn't a nice-to-have. It's the primary channel.</p>
+        </div>
+
+        <div class="card yellow-highlight">
+            <h3>Industry Pattern: Recurring Revenue Without Recurring Communication</h3>
+            <p>Pest control companies sit on gold mines of recurring subscriptions &mdash; quarterly treatments, annual contracts, seasonal services. But most never automate the communication around those subscriptions. No post-service check-in. No seasonal upsell. No cancellation win-back. The recurring revenue model exists in the FSM but never extends to the marketing stack.</p>
+        </div>
+
+        <div class="card yellow-highlight">
+            <h3>Industry Pattern: No Webhook Support on FieldRoutes</h3>
+            <p>FieldRoutes (PestRoutes) is one of the most widely used pest control platforms in North America. It has <strong>zero webhook support</strong>. Every company on FieldRoutes that wants real-time automation needs a polling architecture. Most don't know this limitation exists until they try to build on it &mdash; and most integration vendors won't tell them because they don't build against the API directly.</p>
+        </div>
+
+        <table>
+            <tr><th>What We Found at Valley Pest</th><th>Industry-Wide Implication</th></tr>
+            <tr><td>49% phone-only customers</td><td>Every pest control company on FieldRoutes likely has similar ratios</td></tr>
+            <tr><td>0% lead source attribution</td><td>FieldRoutes doesn't enforce lead source &mdash; most companies skip it</td></tr>
+            <tr><td>Zero automated communication</td><td>FieldRoutes has no built-in marketing automation</td></tr>
+            <tr><td>No webhook support</td><td>Polling is the only integration option for every FieldRoutes user</td></tr>
+            <tr><td>Frozen vs. cancelled ambiguity</td><td>State mapping requires understanding pest control business logic, not just API docs</td></tr>
+        </table>
+    </div>
+</section>
+
+<!-- RESULTS -->
+<section>
+    <div class="container">
+        <h2>Results</h2>
+        <div class="metrics">
+            <div class="metric">
+                <div class="value">8,373</div>
+                <div class="label">Customers Now Reachable</div>
+            </div>
+            <div class="metric">
+                <div class="value">10</div>
+                <div class="label">Automation Workflows Live</div>
+            </div>
+            <div class="metric">
+                <div class="value">5 min</div>
+                <div class="label">Sync Interval</div>
+            </div>
+            <div class="metric">
+                <div class="value">100%</div>
+                <div class="label">Client Isolation</div>
+            </div>
+        </div>
+
+        <div class="card green-highlight">
+            <h3>What Changed</h3>
+            <ul class="feature-list">
+                <li>Every completed service now triggers an automated review request via SMS</li>
+                <li>New customers receive a welcome sequence within 60 seconds of being created in FieldRoutes</li>
+                <li>Cancelled subscriptions automatically enter a 30-day win-back campaign</li>
+                <li>Frozen subscriptions get targeted reactivation messages</li>
+                <li>Missed calls get an immediate text-back &mdash; no more lost leads</li>
+                <li>Full pipeline visibility in CRM without touching FieldRoutes</li>
+                <li>Every sync tracked, every error alerted, every state change logged</li>
+                <li>Foundation for lead source attribution going forward</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT AGM PRO TOOLS -->
+<section style="background: linear-gradient(135deg, #0f3460, #16213e); color: white; border: none;">
+    <div class="container" style="text-align: center;">
+        <h2 style="color: white;">About AGM Pro Tools</h2>
+        <p style="color: rgba(255,255,255,0.8); max-width: 650px; margin: 0 auto 24px;">AGM Pro Tools is an enterprise integration platform for field service businesses. We connect your FSM, CRM, and sales automation systems with self-healing pipelines, real-time monitoring, and the operational intelligence to find and fix problems before they affect your customers.</p>
+        <p style="color: rgba(255,255,255,0.6); font-size: 14px;">We don't just connect systems. We understand what's happening inside them.</p>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<div class="footer">
+    <div class="container">
+        <p>AGM Pro Tools &mdash; Enterprise Integration for Field Service</p>
+        <p style="margin-top: 8px;">Contact: <a href="mailto:Troy@agmprotools.com">Troy@agmprotools.com</a> &nbsp;|&nbsp; <a href="https://agmprotools.com">agmprotools.com</a></p>
+        <p style="margin-top: 16px; font-size: 11px; color: rgba(255,255,255,0.4);">Case study based on live integration engineering &mdash; March 2026</p>
+    </div>
+</div>
+
+</body>
+</html>
